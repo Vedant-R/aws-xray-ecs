@@ -1,0 +1,37 @@
+{
+    "family": "aws-xray-task",
+    "containerDefinitions": [
+    {
+        "name": "xray-daemon",
+        "image": "<your-ecr-image-path-for-xray-daemon>",
+        "cpu": 32,
+        "memoryReservation": 256,
+        "portMappings": [
+            {
+                "hostPort": 2000,
+                "containerPort": 2000,
+                "protocol": "udp"
+            }
+        ]
+    },
+    {
+        "name": "<your-ecr-image-name>",
+        "image": "<your-ecr-image-path-for-logic>",
+        "cpu": 192,
+        "memoryReservation": 512,
+        "environment": [
+            {
+                "name": "AWS_REGION",
+                "value": "<your-aws-region>"
+            },
+            {
+                "name": "AWS_XRAY_DAEMON_ADDRESS",
+                "value": "xray-daemon:2000"
+            }
+        ],
+        "links": [
+            "xray-daemon"
+        ]
+    }
+]
+}
